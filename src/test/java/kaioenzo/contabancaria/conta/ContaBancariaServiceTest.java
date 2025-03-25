@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,5 +69,28 @@ class ContaBancariaServiceTest {
 
         EntidadeNaoEncontrada exception = assertThrows(EntidadeNaoEncontrada.class, () -> service.buscar(uuid.toString()));
         assertEquals(ContaBancariaExceptionsMessage.CONTA_NAO_ENCONTRADA, exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("deveria criar conta com sucesso")
+    void deveriaCriarContaComSucesso() {
+        ContaBancaria contaBancaria = new ContaBancaria();
+        when(repository.save(any(ContaBancaria.class))).thenReturn(contaBancaria);
+
+        ContaBancaria contaCriada = service.criar(new CriaContaBancariaDTO());
+
+        assertNotNull(contaCriada);
+        assertEquals(contaBancaria, contaCriada);
+    }
+
+    @Test
+    @DisplayName("deveria falhar ao criar conta se erro no repository")
+    void deveriaFalharAoCriarContaSeErroNoRepository() {
+        when(repository.save(any(ContaBancaria.class))).thenThrow(new RuntimeException("Erro ao salvar"));
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> service.criar(new CriaContaBancariaDTO()));
+
+        assertEquals("Erro ao salvar", exception.getMessage());
     }
 }

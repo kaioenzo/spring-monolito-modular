@@ -1,5 +1,7 @@
 package kaioenzo.contabancaria.transacao;
 
+import kaioenzo.contabancaria.common.CommomMapper;
+import kaioenzo.contabancaria.common.exceptions.EntidadeNaoEncontrada;
 import kaioenzo.contabancaria.common.interfaces.ServiceIF;
 import kaioenzo.contabancaria.conta.ContaBancaria;
 import kaioenzo.contabancaria.conta.ContaBancariaService;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +36,9 @@ public class TransacaoService implements ServiceIF<Transacao, CriaTransacaoDTO> 
 
     @Override
     public Transacao buscar(String id) {
-        return null;
+        UUID uuid = CommomMapper.converterUUID(id);
+        return transacaoRepository.findById(uuid).orElseThrow(
+                () -> new EntidadeNaoEncontrada(TransacaoExceptionsMessage.TRANSACAO_NAO_ENCONTRADA)
+        );
     }
 }
