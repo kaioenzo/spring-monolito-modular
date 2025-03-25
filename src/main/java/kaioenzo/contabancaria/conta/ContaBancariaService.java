@@ -1,5 +1,6 @@
 package kaioenzo.contabancaria.conta;
 
+import kaioenzo.contabancaria.common.CommomMapper;
 import kaioenzo.contabancaria.common.exceptions.EntidadeNaoEncontrada;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,8 @@ public class ContaBancariaService {
     private final ContaBancariaRepository contaBancariaRepository;
 
     public ContaBancaria buscar(String id) {
-        return contaBancariaRepository.findById(UUID.fromString(id)).orElseThrow(
+        UUID uuid = CommomMapper.converterUUID(id);
+        return contaBancariaRepository.findById(uuid).orElseThrow(
                 () -> new EntidadeNaoEncontrada(ContaBancariaExceptionsMessage.CONTA_NAO_ENCONTRADA)
         );
     }
