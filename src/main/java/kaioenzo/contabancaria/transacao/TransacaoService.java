@@ -18,7 +18,7 @@ public class TransacaoService implements ServiceIF<Transacao, CriaTransacaoDTO> 
     @Override
     public Transacao criar(CriaTransacaoDTO criaTransacaoDTO) {
         ContaBancaria contaBancaria = contaBancariaService.buscar(criaTransacaoDTO.contaId());
-        if (criaTransacaoDTO.tipoTransacao() == TipoTransacao.DEPOSITO) {
+        if (criaTransacaoDTO.tipoTransacao() == TipoTransacao.SAQUE) {
             validarDeposito(contaBancaria, BigDecimal.valueOf(criaTransacaoDTO.valor()));
         }
         Transacao transacao = new Transacao(contaBancaria, BigDecimal.valueOf(criaTransacaoDTO.valor()), criaTransacaoDTO.tipoTransacao(), LocalDateTime.now());

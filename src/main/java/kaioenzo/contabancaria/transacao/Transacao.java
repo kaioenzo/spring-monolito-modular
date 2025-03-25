@@ -1,5 +1,6 @@
 package kaioenzo.contabancaria.transacao;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import kaioenzo.contabancaria.conta.ContaBancaria;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class Transacao {
 
     @ManyToOne
     @JoinColumn(name = "conta_id", nullable = false, updatable = false)
+    @JsonBackReference
     private ContaBancaria contaBancaria;
 
     @Column(updatable = false, nullable = false)
