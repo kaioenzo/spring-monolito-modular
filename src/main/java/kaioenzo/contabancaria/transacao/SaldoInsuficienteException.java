@@ -1,11 +1,10 @@
 package kaioenzo.contabancaria.transacao;
 
-public class SaldoInsuficienteException extends RuntimeException {
-    public SaldoInsuficienteException(String message) {
-        super(message);
-    }
+import kaioenzo.contabancaria.common.exceptions.BaseException;
+import org.springframework.http.HttpStatus;
 
+public class SaldoInsuficienteException extends BaseException {
     public SaldoInsuficienteException() {
-        super("Saldo insuficiente.");
+        super("Saldo insuficiente.", HttpStatus.PRECONDITION_FAILED.value());
     }
 }

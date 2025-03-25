@@ -1,7 +1,9 @@
 package kaioenzo.contabancaria.common.exceptions;
 
-public class EntidadeNaoEncontrada extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class EntidadeNaoEncontrada extends BaseException {
     public EntidadeNaoEncontrada(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND.value());
     }
 }
