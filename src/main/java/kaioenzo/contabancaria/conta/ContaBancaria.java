@@ -1,33 +1,37 @@
 package kaioenzo.contabancaria.conta;
 
 import jakarta.persistence.*;
+import kaioenzo.contabancaria.transacao.TipoTransacao;
 import kaioenzo.contabancaria.transacao.Transacao;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class ContaBancaria {
+    public ContaBancaria(Set<Transacao> transacoes) {
+        this.transacoes = transacoes;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false)
     private UUID id;
 
     @OneToMany(mappedBy = "contaBancaria")
-    private Set<Transacao> transacoes;
+    private Set<Transacao> transacoes = new HashSet<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        ContaBancaria that = (ContaBancaria) o;
-        return Objects.equals(id, that.id) && Objects.equals(transacoes, that.transacoes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    public BigDecimal calcularSaldo() {
+        return transacoes.stream()
+                .map(t -> t.getTipoTransacao() == TipoTransacao.DEPOSITO ?
+                        t.getValor() :
+                        t.getValor().negate())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

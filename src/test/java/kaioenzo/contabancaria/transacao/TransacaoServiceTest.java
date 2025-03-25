@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -38,5 +39,19 @@ public class TransacaoServiceTest {
         Transacao transacao = service.criar(dto);
 
         Assertions.assertNotNull(transacao);
+    }
+
+    @Test
+    @DisplayName("deveria lançar exception para transação de depósito com saldo insuficiente")
+    void deveriaLancarExceptionParaTransacaoDeDepositoComSaldoInsuficiente() {
+        UUID contaId = UUID.randomUUID();
+        CriaTransacaoDTO dto = new CriaTransacaoDTO(contaId.toString(), TipoTransacao.DEPOSITO, 100.0);
+        ContaBancaria contaBancaria = new ContaBancaria();
+        Transacao transacaoCriada = new Transacao();
+        when(contaBancariaService.buscar(contaId.toString())).thenReturn(contaBancaria);
+
+        assertThrows(SaldoInsuficienteException.class, () -> service.criar(dto));
+
+
     }
 }

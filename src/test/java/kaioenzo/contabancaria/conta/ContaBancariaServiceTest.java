@@ -1,6 +1,8 @@
 package kaioenzo.contabancaria.conta;
 
 import kaioenzo.contabancaria.common.exceptions.EntidadeNaoEncontrada;
+import kaioenzo.contabancaria.transacao.TipoTransacao;
+import kaioenzo.contabancaria.transacao.Transacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,7 +10,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +25,27 @@ class ContaBancariaServiceTest {
     private ContaBancariaRepository repository;
     @InjectMocks
     private ContaBancariaService service;
+
+    @Test
+    @DisplayName("deveria ter saldo zerado")
+    void deveriaTerSaldoZerado() {
+        ContaBancaria contaBancaria = new ContaBancaria();
+        BigDecimal saldo = BigDecimal.ZERO;
+        assertEquals(saldo, contaBancaria.calcularSaldo());
+    }
+
+    @Test
+    @DisplayName("deveria calcular saldo com transacoes")
+    void deveriaCalcularSaldoComTransacoes() {
+        Transacao deposito = new Transacao(null, new BigDecimal("500.00"), TipoTransacao.DEPOSITO, null);
+        Transacao saque = new Transacao(null, new BigDecimal("200.00"), TipoTransacao.SAQUE, null);
+
+        Set<Transacao> transacoes = Set.of(deposito, saque);
+        ContaBancaria contaBancaria = new ContaBancaria(transacoes);
+
+        BigDecimal saldoEsperado = new BigDecimal("300.00");
+        assertEquals(saldoEsperado, contaBancaria.calcularSaldo());
+    }
 
     @Test
     @DisplayName("deveria buscar conta com sucesso")

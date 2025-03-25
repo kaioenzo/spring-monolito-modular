@@ -18,8 +18,17 @@ public class TransacaoService implements ServiceIF<Transacao, CriaTransacaoDTO> 
     @Override
     public Transacao criar(CriaTransacaoDTO criaTransacaoDTO) {
         ContaBancaria contaBancaria = contaBancariaService.buscar(criaTransacaoDTO.contaId());
+        if (criaTransacaoDTO.tipoTransacao() == TipoTransacao.DEPOSITO) {
+            validarDeposito(contaBancaria, BigDecimal.valueOf(criaTransacaoDTO.valor()));
+        }
         Transacao transacao = new Transacao(contaBancaria, BigDecimal.valueOf(criaTransacaoDTO.valor()), criaTransacaoDTO.tipoTransacao(), LocalDateTime.now());
         return transacaoRepository.save(transacao);
+    }
+
+    private void validarDeposito(ContaBancaria contaBancaria, BigDecimal valor) {
+        if (contaBancaria.calcularSaldo().compareTo(valor) < 0) {
+            throw new SaldoInsuficienteException();
+        }
     }
 
     @Override
