@@ -1,7 +1,5 @@
 package kaioenzo.contabancaria.common;
 
-import kaioenzo.contabancaria.common.exceptions.UUIDInvalidoException;
-
 import java.util.UUID;
 
 public class CommomMapper {

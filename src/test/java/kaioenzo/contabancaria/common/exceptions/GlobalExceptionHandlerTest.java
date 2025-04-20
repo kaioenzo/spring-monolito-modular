@@ -1,5 +1,7 @@
 package kaioenzo.contabancaria.common.exceptions;
 
+import kaioenzo.contabancaria.common.BaseException;
+import kaioenzo.contabancaria.common.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
